@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UrlController;
+use App\Http\Controllers\ShortUrlController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +18,4 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/{short_url}', [UrlController::class, 'redirect']);
+Route::get('/{short_url}', [ShortUrlController::class, 'redirect']);
