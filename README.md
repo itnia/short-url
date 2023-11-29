@@ -8,7 +8,7 @@
 <!-- описать -->
 
 
-### обновить - PUT/PATCH	/short_url/{short_url}
+### обновить - PUT	/short_url/{short_url}
 <!-- описать -->
 
 

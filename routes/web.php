@@ -15,7 +15,7 @@ use App\Http\Controllers\UrlController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 Route::get('/{short_url}', [UrlController::class, 'redirect']);

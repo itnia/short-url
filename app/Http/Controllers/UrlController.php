@@ -7,35 +7,50 @@ use Illuminate\Http\Request;
 
 class UrlController extends Controller
 {
-    public function index()
-    {
-        // только для админки
-        $urls = Url::all();
+    // public function index()
+    // {
+    //     // только для админки
+    //     $urls = Url::all();
         
-        return response()->json($urls);
-    }
+    //     return response()->json($urls);
+    // }
 
-    public function create()
-    {
-        // только для админки
-    }
+    
+    // public function create()
+    // {
+    //     // только для админки
+    // }
+
 
     public function store(Request $request)
     {
-        // Валидация url
+        // Валидация long_url
         if (!filter_var($request->long_url, FILTER_VALIDATE_URL)) {
             return response()->json([
                 'status' => 'error',
-            ]);
-        }
-        if (!empty($request->short_url) AND !filter_var($request->short_url, FILTER_VALIDATE_URL)) {
-            return response()->json([
-                'status' => 'error',
+                'message' => ''
             ]);
         }
 
-        // ++ валидация short_url - на лишние слэши
-        // ++ валидация short_url - на длину
+        // Валидация short_url
+        if (!empty($request->short_url) AND !filter_var($request->short_url, FILTER_VALIDATE_URL)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => ''
+            ]);
+        }
+        if (substr_count($request->short_url, '/') > 2) {
+            return response()->json([
+                'status' => 'error',
+                'message' => ''
+            ]);
+        }
+        if (strlen($request->short_url) > 100) {
+            return response()->json([
+                'status' => 'error',
+                'message' => ''
+            ]);
+        }
 
         // Проверка на существования long_url
         if ($res = Url::where('long_url', $request->long_url)->first()) {
@@ -85,32 +100,42 @@ class UrlController extends Controller
         ]);
     }
 
-    public function show(Url $url)
+
+    public function show(Url $url, $short_url)
     {
-        $url = Url::find(1); // ?
+        if ($url = Url::where('id', $short_url)->first()) {
+            return response()->json([
+                'status' => 'show',
+                'long_url' =>$url->long_url,
+                'short_url' => $url->short_url,
+                'number_views' => $url->number_views,
+            ]);
+        }
+
         return response()->json([
-            'status' => 'show',
-            'long_url' =>$url->long_url,
-            'short_url' => $url->short_url,
-            'number_views' => $url->number_views,
+            'status' => 'error'
         ]);
     }
 
-    public function edit(Url $url)
+
+    // public function edit(Url $url)
+    // {
+    //     // только для админки
+    // }
+
+
+    public function update(Request $request, Url $url, $short_url)
     {
-        // только для админки
+        $url = Url::find($short_url); // ?
     }
 
-    public function update(Request $request, Url $url)
-    {
-        $url = Url::find(1); // ?
-    }
 
-    public function destroy(Url $url)
+    public function destroy(Url $url, $short_url)
     {
         $url = Url::find(1); // ?
         $url->delete();
     }
+
 
     public function redirect($short_url)
     {
@@ -119,5 +144,15 @@ class UrlController extends Controller
         }
 
         abort(404);
+    }
+
+    
+    private function validateLongUrl() {
+        
+    }
+
+
+    private function validateShortUrl() {
+
     }
 }
